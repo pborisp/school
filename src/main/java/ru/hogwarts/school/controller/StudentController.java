@@ -26,20 +26,11 @@ public class StudentController {
 
     @GetMapping("{studentId}")
     public ResponseEntity<Student> getStudent(@PathVariable Long studentId) {
-        Student student = studentService.getStudent(studentId);
+        Student student = studentService.getStudentById(studentId);
         if (student == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(student);
-    }
-
-    @PutMapping
-    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
-        Student updateStudent = studentService.updateStudent(student.getId(), student);
-        if (updateStudent == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(updateStudent);
     }
 
     @DeleteMapping("{studentId}")
@@ -51,9 +42,10 @@ public class StudentController {
     @GetMapping("search/{age}")
     public ResponseEntity<List<Student>> getStudentAge(@RequestParam int age) {
         if (age > 0) {
-            return ResponseEntity.ok(studentService.searchAge(age));
+            return ResponseEntity.ok(studentService.findByAgeLike(age));
         }
         return ResponseEntity.ok(Collections.emptyList());
     }
+
 }
 
