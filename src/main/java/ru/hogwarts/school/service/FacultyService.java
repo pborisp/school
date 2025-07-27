@@ -31,7 +31,11 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
 
-    public List<Faculty> findByColorLike(String color) {
-        return facultyRepository.findByColorLike(color);
+    public List<Faculty> findByColorContainsIgnoreCase(String color) {
+        return facultyRepository.findByColorContainsIgnoreCase(color);
+    }
+
+    public List<String> getStudentsOfFaculty(String nameFaculty) {
+        return facultyRepository.getStudentsOfFaculty(nameFaculty);
     }
 }

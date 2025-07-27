@@ -23,6 +23,10 @@ public class StudentService {
         return studentRepository.findById(studentId).get();
     }
 
+    public String getFaculty(Long studentId) {
+        return studentRepository.getFaculty(studentId);
+    }
+
     public void deleteStudent(Long studentId) {
         studentRepository.deleteById(studentId);
     }
@@ -34,6 +38,10 @@ public class StudentService {
     public List<Student> findByAgeLike(int age) {
         return studentRepository.findAll().stream()
                 .filter(st -> st.getAge() == age).toList();
+    }
+
+    public List<Student> findByAgeBetween(int minAge, int maxAge) {
+        return studentRepository.findByAgeBetween(minAge, maxAge);
     }
 
 }
