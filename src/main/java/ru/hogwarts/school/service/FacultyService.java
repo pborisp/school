@@ -2,10 +2,13 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.model.Faculty;
+import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class FacultyService {
@@ -19,8 +22,12 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    public Faculty getFacultyById(Long facultyId) {
-        return facultyRepository.findById(facultyId).get();
+    public Faculty updateFaculty(Faculty faculty) {
+        return facultyRepository.save(faculty);
+    }
+
+    public Optional<Faculty> getFacultyById(Long facultyId) {
+        return Optional.ofNullable(facultyRepository.findById(facultyId).get());
     }
 
     public void dellFaculty(Long facultyId) {
@@ -31,11 +38,16 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
 
-    public List<Faculty> findByColorContainsIgnoreCase(String color) {
-        return facultyRepository.findByColorContainsIgnoreCase(color);
+    public List<Faculty> findByColorOrNameContainsIgnoreCase(String color, String name) {
+        if (name == null) {
+            return facultyRepository.findByColorContainsIgnoreCase(color);
+        }
+        return facultyRepository.findByNameContainsIgnoreCase(name);
     }
 
-    public List<String> getStudentsOfFaculty(String nameFaculty) {
-        return facultyRepository.getStudentsOfFaculty(nameFaculty);
+    public Optional<List<Student>> getStudentsOfFaculty(Long idFaculty) {
+        Faculty faculty = facultyRepository.findById(idFaculty).get();
+        List<Student> students = faculty.getStudents();
+        return Optional.ofNullable(students);
     }
 }

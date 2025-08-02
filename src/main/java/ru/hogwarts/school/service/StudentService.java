@@ -1,11 +1,12 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -19,12 +20,19 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Student getStudentById(Long studentId) {
-        return studentRepository.findById(studentId).get();
+    public Student updateStudent(Student student) {
+        return studentRepository.save(student);
     }
 
-    public String getFaculty(Long studentId) {
-        return studentRepository.getFaculty(studentId);
+    public Optional<Student> getStudentById(Long studentId) {
+        Student student = studentRepository.findById(studentId).get();
+        return Optional.ofNullable(student);
+    }
+
+    public Optional<Faculty> getFacultyById(Long studentId) {
+        Student student = studentRepository.findById(studentId).get();
+        Faculty faculty = student.getFaculty();
+        return Optional.ofNullable(faculty);
     }
 
     public void deleteStudent(Long studentId) {
@@ -35,13 +43,8 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public List<Student> findByAgeLike(int age) {
-        return studentRepository.findAll().stream()
-                .filter(st -> st.getAge() == age).toList();
-    }
-
-    public List<Student> findByAgeBetween(int minAge, int maxAge) {
-        return studentRepository.findByAgeBetween(minAge, maxAge);
+    public Collection<Student> findAllByAgeBetween(int minAge, int maxAge) {
+        return studentRepository.findAllByAgeBetween(minAge, maxAge);
     }
 
 }
