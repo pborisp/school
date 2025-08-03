@@ -5,9 +5,9 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.FacultyRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -27,7 +27,7 @@ public class FacultyService {
     }
 
     public Optional<Faculty> getFacultyById(Long facultyId) {
-        return Optional.ofNullable(facultyRepository.findById(facultyId).get());
+        return Optional.ofNullable(facultyRepository.findById(facultyId).orElse(null));
     }
 
     public void dellFaculty(Long facultyId) {
@@ -38,16 +38,23 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
 
-    public List<Faculty> findByColorOrNameContainsIgnoreCase(String color, String name) {
-        if (name == null) {
-            return facultyRepository.findByColorContainsIgnoreCase(color);
+    public List<Faculty> findByColorNameContainsIgnoreCase(String str) {
+        List<Faculty> faculties;
+        if (!facultyRepository.findByNameContainsIgnoreCase(str).isEmpty()) {
+            faculties = facultyRepository.findByNameContainsIgnoreCase(str);
+        } else if (!facultyRepository.findByColorContainsIgnoreCase(str).isEmpty()) {
+            faculties = facultyRepository.findByColorContainsIgnoreCase(str);
+        } else {
+            faculties = new ArrayList<>();
         }
-        return facultyRepository.findByNameContainsIgnoreCase(name);
+        return faculties;
     }
 
-    public Optional<List<Student>> getStudentsOfFaculty(Long idFaculty) {
-        Faculty faculty = facultyRepository.findById(idFaculty).get();
-        List<Student> students = faculty.getStudents();
-        return Optional.ofNullable(students);
+    public List<Student> getStudentsOfFaculty(Long idFaculty) {
+        Faculty faculty = Optional.ofNullable(facultyRepository.findById(idFaculty).orElse(null)).orElse(null);
+        if (faculty == null) {
+            return null;
+        }
+        return faculty.getStudents();
     }
 }

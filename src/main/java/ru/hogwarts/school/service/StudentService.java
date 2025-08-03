@@ -2,7 +2,6 @@ package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.FacultyDTO;
-import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
@@ -26,14 +25,15 @@ public class StudentService {
     }
 
     public Optional<Student> getStudentById(Long studentId) {
-        Student student = studentRepository.findById(studentId).get();
-        return Optional.ofNullable(student);
+        return Optional.ofNullable(studentRepository.findById(studentId).orElse(null));
     }
 
-    public Optional<FacultyDTO> getFacultyById(Long studentId) {
-        Student student = studentRepository.findById(studentId).get();
-        FacultyDTO faculty = FacultyDTO.fromfaculty(student.getFaculty());
-        return Optional.ofNullable(faculty);
+    public FacultyDTO getFacultyById(Long studentId) {
+        Student student = Optional.ofNullable(studentRepository.findById(studentId).orElse(null)).orElse(null);
+        if (student == null) {
+            return null;
+        }
+        return FacultyDTO.fromfaculty(student.getFaculty());
     }
 
     public void deleteStudent(Long studentId) {

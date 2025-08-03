@@ -25,7 +25,7 @@ public class StudentController {
     public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
         Student updateStudent = studentService.updateStudent(student);
         if (updateStudent == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updateStudent);
     }
@@ -37,11 +37,10 @@ public class StudentController {
 
     @GetMapping("{studentId}")
     public ResponseEntity<Optional<Student>> getStudent(@PathVariable Long studentId) {
-        Optional<Student> student = studentService.getStudentById(studentId);
-        if (student == null || student.isEmpty() || !student.isPresent()) {
+        if (studentService.getStudentById(studentId) == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(student);
+        return ResponseEntity.ok(studentService.getStudentById(studentId));
     }
 
     @DeleteMapping("{studentId}")
@@ -51,12 +50,11 @@ public class StudentController {
     }
 
     @GetMapping("/{studentId}/getFaculty")
-    public ResponseEntity<Optional<FacultyDTO>> getFaculty(@PathVariable Long studentId) {
-        Optional<FacultyDTO> faculty = studentService.getFacultyById(studentId);
-        if (studentId == null) {
+    public ResponseEntity<FacultyDTO> getFaculty(@PathVariable Long studentId) {
+        if (studentService.getFacultyById(studentId) == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(faculty);
+        return ResponseEntity.ok(studentService.getFacultyById(studentId));
     }
 
     @GetMapping("/search")

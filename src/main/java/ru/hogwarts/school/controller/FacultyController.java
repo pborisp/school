@@ -1,6 +1,5 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.model.Faculty;
@@ -28,18 +27,17 @@ public class FacultyController {
     public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty) {
         Faculty updateFaculty = facultyService.updateFaculty(faculty);
         if (updateFaculty == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updateFaculty);
     }
 
     @GetMapping("{facultyId}")
     public ResponseEntity<Optional<Faculty>> getFaculty(@PathVariable Long facultyId) {
-        Optional<Faculty> faculty = facultyService.getFacultyById(facultyId);
-        if (faculty == null) {
+        if (facultyService.getFacultyById(facultyId) == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(faculty);
+        return ResponseEntity.ok(facultyService.getFacultyById(facultyId));
     }
 
     @DeleteMapping("{facultyId}")
@@ -49,18 +47,14 @@ public class FacultyController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Faculty>> searchColor(@RequestParam(required = false) String color,
-                                                     @RequestParam(required = false) String name) {
-        if (color == null && name == null) {
-            ResponseEntity.ok().build();
-        }
-        return ResponseEntity.ok(facultyService.findByColorOrNameContainsIgnoreCase(color, name));
+    public ResponseEntity<List<Faculty>> searchColorOrName(@RequestParam String str) {
+        return ResponseEntity.ok(facultyService.findByColorNameContainsIgnoreCase(str));
     }
 
     @GetMapping("/{idFaculty}/getStudentsOfFaculty")
-    public ResponseEntity<Optional<List<Student>>> getStudentsOfFaculty(@PathVariable Long idFaculty) {
-        if (idFaculty == null) {
-            return ResponseEntity.ok().build();
+    public ResponseEntity<List<Student>> getStudentsOfFaculty(@PathVariable Long idFaculty) {
+        if (facultyService.getStudentsOfFaculty(idFaculty) == null) {
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(facultyService.getStudentsOfFaculty(idFaculty));
     }
