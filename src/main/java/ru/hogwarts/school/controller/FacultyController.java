@@ -6,8 +6,8 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("faculty")
@@ -33,11 +33,12 @@ public class FacultyController {
     }
 
     @GetMapping("{facultyId}")
-    public ResponseEntity<Optional<Faculty>> getFaculty(@PathVariable Long facultyId) {
-        if (facultyService.getFacultyById(facultyId) == null) {
+    public ResponseEntity<Faculty> getFaculty(@PathVariable Long facultyId) {
+        Faculty faculty = facultyService.getFacultyById(facultyId);
+        if (faculty == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(facultyService.getFacultyById(facultyId));
+        return ResponseEntity.ok(faculty);
     }
 
     @DeleteMapping("{facultyId}")
@@ -47,15 +48,16 @@ public class FacultyController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Faculty>> searchColorOrName(@RequestParam String str) {
-        return ResponseEntity.ok(facultyService.findByColorNameContainsIgnoreCase(str));
+    public ResponseEntity<Collection<Faculty>> searchByColorOrName(@RequestParam String str) {
+        return ResponseEntity.ok(facultyService.findByColorContainsIgnoreCaseOrNameContainsIgnoreCase(str));
     }
 
     @GetMapping("/{idFaculty}/getStudentsOfFaculty")
     public ResponseEntity<List<Student>> getStudentsOfFaculty(@PathVariable Long idFaculty) {
-        if (facultyService.getStudentsOfFaculty(idFaculty) == null) {
+        List<Student> students = facultyService.getStudentsOfFaculty(idFaculty);
+        if (students == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(facultyService.getStudentsOfFaculty(idFaculty));
+        return ResponseEntity.ok(students);
     }
 }

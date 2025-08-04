@@ -1,16 +1,12 @@
 package ru.hogwarts.school.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.school.dto.FacultyDTO;
-import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("student")
@@ -36,11 +32,12 @@ public class StudentController {
     }
 
     @GetMapping("{studentId}")
-    public ResponseEntity<Optional<Student>> getStudent(@PathVariable Long studentId) {
-        if (studentService.getStudentById(studentId) == null) {
+    public ResponseEntity<Student> getStudent(@PathVariable Long studentId) {
+        Student student = studentService.getStudentById(studentId);
+        if (student == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.getStudentById(studentId));
+        return ResponseEntity.ok(student);
     }
 
     @DeleteMapping("{studentId}")
@@ -51,10 +48,11 @@ public class StudentController {
 
     @GetMapping("/{studentId}/getFaculty")
     public ResponseEntity<FacultyDTO> getFaculty(@PathVariable Long studentId) {
-        if (studentService.getFacultyById(studentId) == null) {
+        FacultyDTO facultyDTO = studentService.getFacultyById(studentId);
+        if (facultyDTO == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.getFacultyById(studentId));
+        return ResponseEntity.ok(facultyDTO);
     }
 
     @GetMapping("/search")
@@ -63,7 +61,7 @@ public class StudentController {
         if (maxAge > minAge) {
             return ResponseEntity.ok(studentService.findAllByAgeBetween(minAge, maxAge));
         }
-        return ResponseEntity.ok(Collections.emptyList());
+        return ResponseEntity.notFound().build();
     }
 
 }

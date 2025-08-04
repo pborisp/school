@@ -8,7 +8,6 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FacultyService {
@@ -26,8 +25,8 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    public Optional<Faculty> getFacultyById(Long facultyId) {
-        return Optional.ofNullable(facultyRepository.findById(facultyId).orElse(null));
+    public Faculty getFacultyById(Long facultyId) {
+        return facultyRepository.findById(facultyId).orElse(null);
     }
 
     public void dellFaculty(Long facultyId) {
@@ -38,20 +37,12 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
 
-    public List<Faculty> findByColorNameContainsIgnoreCase(String str) {
-        List<Faculty> faculties;
-        if (!facultyRepository.findByNameContainsIgnoreCase(str).isEmpty()) {
-            faculties = facultyRepository.findByNameContainsIgnoreCase(str);
-        } else if (!facultyRepository.findByColorContainsIgnoreCase(str).isEmpty()) {
-            faculties = facultyRepository.findByColorContainsIgnoreCase(str);
-        } else {
-            faculties = new ArrayList<>();
-        }
-        return faculties;
+    public Collection<Faculty> findByColorContainsIgnoreCaseOrNameContainsIgnoreCase(String str) {
+        return facultyRepository.findByColorContainsIgnoreCaseOrNameContainsIgnoreCase(str, str);
     }
 
     public List<Student> getStudentsOfFaculty(Long idFaculty) {
-        Faculty faculty = Optional.ofNullable(facultyRepository.findById(idFaculty).orElse(null)).orElse(null);
+        Faculty faculty = facultyRepository.findById(idFaculty).orElse(null);
         if (faculty == null) {
             return null;
         }

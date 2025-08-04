@@ -6,7 +6,6 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -24,12 +23,12 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Optional<Student> getStudentById(Long studentId) {
-        return Optional.ofNullable(studentRepository.findById(studentId).orElse(null));
+    public Student getStudentById(Long studentId) {
+        return studentRepository.findById(studentId).orElse(null);
     }
 
     public FacultyDTO getFacultyById(Long studentId) {
-        Student student = Optional.ofNullable(studentRepository.findById(studentId).orElse(null)).orElse(null);
+        Student student = studentRepository.findById(studentId).orElse(null);
         if (student == null) {
             return null;
         }
