@@ -8,7 +8,10 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.AvatarRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,13 +24,13 @@ public class AvatarServiceImpl implements AvatarService {
     private final AvatarRepository avatarRepository;
     private final StudentRepository studentRepository;
 
+    @Value("${path.to.avatars.folder}")
+    private String avatarsDir;
+
     public AvatarServiceImpl(AvatarRepository avatarRepository, StudentRepository studentRepository) {
         this.avatarRepository = avatarRepository;
         this.studentRepository = studentRepository;
     }
-
-    @Value("${path.to.avatars.folder}")
-    private String avatarsDir;
 
     @Override
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
@@ -46,10 +49,29 @@ public class AvatarServiceImpl implements AvatarService {
         Avatar avatar = findAvatar(studentId);
         avatar.setStudent(student);
         avatar.setFilePath(filePath.toString());
-        avatar.setFileSize(avatar.getFileSize());
+        avatar.setFileSize(avatarFile.getSize());
         avatar.setMediaType(avatarFile.getContentType());
-        avatar.setData(avatarFile.getBytes());
+        avatar.setData(generatedDataForDB(filePath));
         avatarRepository.save(avatar);
+    }
+
+    private byte[] generatedDataForDB(Path filePath) throws IOException {
+        try (
+                InputStream is = Files.newInputStream(filePath);
+                BufferedInputStream bis = new BufferedInputStream(is, 1024);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()
+        ) {
+            BufferedImage image = ImageIO.read(bis);
+
+            int height = image.getHeight() / (image.getWidth() / 100);
+            BufferedImage preview = new BufferedImage(100, height, image.getType());
+            Graphics2D graphics2D = preview.createGraphics();
+            graphics2D.drawImage(image, 0, 0, 100, height, null);
+            graphics2D.dispose();
+
+            ImageIO.write(preview, getExceptions(filePath.getFileName().toString()), baos);
+            return baos.toByteArray();
+        }
     }
 
     @Override
