@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.school.dto.FacultyDTO;
 import ru.hogwarts.school.model.Student;
@@ -45,6 +46,18 @@ public class StudentService {
 
     public Collection<Student> findAllByAgeBetween(int minAge, int maxAge) {
         return studentRepository.findAllByAgeBetween(minAge, maxAge);
+    }
+
+    public Integer getCountOfStudents() {
+        return studentRepository.getCountOfStudents();
+    }
+
+    public Integer getAvgAgeOfStudents() {
+        return studentRepository.getAvgAgeOfStudents();
+    }
+
+    public Collection<Student> getLastFiveStudents() {
+        return studentRepository.findLastFiveStudents();
     }
 
 }
