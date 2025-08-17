@@ -70,7 +70,7 @@ public class StudentController {
     }
 
     @GetMapping("/getAvgAgeOfStudents")
-    public ResponseEntity<Integer> getAvgAgeOfStudents() {
+    public ResponseEntity<Double> getAvgAgeOfStudents() {
         return ResponseEntity.ok(studentService.getAvgAgeOfStudents());
     }
 

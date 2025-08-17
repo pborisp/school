@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
+import ru.hogwarts.school.service.AvatarService;
 import ru.hogwarts.school.service.AvatarServiceImpl;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,14 +17,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("avatar")
 public class AvatarController {
-    private final AvatarServiceImpl avatarService;
+    private final AvatarService avatarService;
 
-    public AvatarController(AvatarServiceImpl avatarService) {
+    public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
 
@@ -36,6 +38,9 @@ public class AvatarController {
     @GetMapping(value = "/{id}/avatar/preview")
     public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long id) {
         Avatar avatar = avatarService.findAvatar(id);
+        if (avatar == null) {
+            return ResponseEntity.notFound().build();
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
@@ -46,7 +51,12 @@ public class AvatarController {
 
     @GetMapping(value = "/avatar/findAllAvatars")
     public ResponseEntity<List<Avatar>> downloadAllAvatar(@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
-        return ResponseEntity.ok(avatarService.findAllAvatar(page, size));
+        List<Avatar> avatars = new ArrayList<>();
+        avatars = avatarService.findAllAvatar(page, size);
+        if (avatars == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(avatars    );
     }
 
     @GetMapping(value = "/{id}/avatar")

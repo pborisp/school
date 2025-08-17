@@ -76,14 +76,18 @@ public class AvatarServiceImpl implements AvatarService {
         }
     }
 
+    @Override
     public List<Avatar> findAllAvatar(Integer page, Integer size) {
+        if (page < 1 || size < 1) {
+            return null;
+        }
         PageRequest pageRequest = PageRequest.of(page - 1, size);
         return avatarRepository.findAll(pageRequest).getContent();
     }
 
     @Override
     public Avatar findAvatar(Long studentId) {
-        return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
+        return avatarRepository.findByStudentId(studentId).orElse(null);
     }
 
     private String getExceptions(String fileName) {

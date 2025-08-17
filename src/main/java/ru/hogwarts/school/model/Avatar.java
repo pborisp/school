@@ -14,15 +14,15 @@ public class Avatar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String filePath;
-    long fileSize;
-    String mediaType;
+    private long fileSize;
+    private String mediaType;
 
     @Lob
     @JsonIgnore
-    byte[] data;
+    private byte[] data;
 
     @OneToOne
-    Student student;
+    private Student student;
 
     public Long getId() {
         return id;
