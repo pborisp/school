@@ -1,6 +1,10 @@
 package ru.hogwarts.school.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import org.hibernate.annotations.Table;
+import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.util.Objects;

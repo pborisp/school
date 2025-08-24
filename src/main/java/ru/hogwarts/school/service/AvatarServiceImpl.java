@@ -1,5 +1,7 @@
 package ru.hogwarts.school.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class AvatarServiceImpl implements AvatarService {
     private final AvatarRepository avatarRepository;
     private final StudentRepository studentRepository;
 
+    private final static Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
+
     @Value("${path.to.avatars.folder}")
     private String avatarsDir;
 
@@ -36,10 +40,12 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
+        logger.debug("Was invoked method for upload avatar with id: {}", studentId);
         Student student = studentRepository.getById(studentId);
         Path filePath = Path.of(avatarsDir, student + "." + getExceptions(avatarFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
+
         try (
                 InputStream is = avatarFile.getInputStream();
                 OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
@@ -58,6 +64,7 @@ public class AvatarServiceImpl implements AvatarService {
     }
 
     private byte[] generatedDataForDB(Path filePath) throws IOException {
+        logger.info("Was invoked method for upload avatar for Data Base");
         try (
                 InputStream is = Files.newInputStream(filePath);
                 BufferedInputStream bis = new BufferedInputStream(is, 1024);
@@ -78,6 +85,7 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public List<Avatar> findAllAvatar(Integer page, Integer size) {
+        logger.info("Was invoked method for find all avatars");
         if (page < 1 || size < 1) {
             return null;
         }
@@ -87,10 +95,12 @@ public class AvatarServiceImpl implements AvatarService {
 
     @Override
     public Avatar findAvatar(Long studentId) {
+        logger.info("Was invoked method for find avatar with id: {}", studentId);
         return avatarRepository.findByStudentId(studentId).orElse(null);
     }
 
     private String getExceptions(String fileName) {
+        logger.error("There is not avatar with filePath = " + fileName);
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 }
