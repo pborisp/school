@@ -1,17 +1,15 @@
 package ru.hogwarts.school.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import org.hibernate.annotations.Table;
-import org.springframework.data.annotation.Id;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "student")
+@Table(appliesTo = "student")
 public class Student {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

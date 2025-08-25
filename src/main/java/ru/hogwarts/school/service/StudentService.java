@@ -14,29 +14,29 @@ import java.util.Collection;
 public class StudentService {
     private final StudentRepository studentRepository;
 
-    private final static Logger logger = LoggerFactory.getLogger(StudentService.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(StudentService.class);
 
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
 
     public Student createStudent(Student student) {
-        logger.info("Was invoked method for create student: {}", student);
+        LOGGER.info("Was invoked method for create student: {}", student);
         return studentRepository.save(student);
     }
 
     public Student updateStudent(Student student) {
-        logger.info("Was invoked method for update student: {}", student);
+        LOGGER.info("Was invoked method for update student: {}", student);
         return studentRepository.save(student);
     }
 
     public Student getStudentById(Long studentId) {
-        logger.debug("Was invoked method for get student by Id: {}", studentId);
+        LOGGER.debug("Was invoked method for get student by Id: {}", studentId);
         return studentRepository.findById(studentId).orElse(null);
     }
 
     public FacultyDTO getFacultyById(Long studentId) {
-        logger.debug("Was invoked method for get faculty by id: {}", studentId);
+        LOGGER.debug("Was invoked method for get faculty by id: {}", studentId);
         Student student = studentRepository.findById(studentId).orElse(null);
         if (student == null) {
             return null;
@@ -45,32 +45,32 @@ public class StudentService {
     }
 
     public void deleteStudent(Long studentId) {
-        logger.info("Was invoked method for delete student: {}", studentId);
+        LOGGER.info("Was invoked method for delete student: {}", studentId);
         studentRepository.deleteById(studentId);
     }
 
     public Collection<Student> getAllStudent() {
-        logger.debug("Was invoked method for get all students");
+        LOGGER.debug("Was invoked method for get all students");
         return studentRepository.findAll();
     }
 
     public Collection<Student> findAllByAgeBetween(int minAge, int maxAge) {
-        logger.info("Was invoked method for find all by between");
+        LOGGER.info("Was invoked method for find all by between");
         return studentRepository.findAllByAgeBetween(minAge, maxAge);
     }
 
     public Integer getCountOfStudents() {
-        logger.info("Was invoked method for get count of student");
+        LOGGER.info("Was invoked method for get count of student");
         return studentRepository.getCountOfStudents();
     }
 
     public Double getAvgAgeOfStudents() {
-        logger.info("Was invoked method for get avg age of students");
+        LOGGER.info("Was invoked method for get avg age of students");
         return studentRepository.getAvgAgeOfStudents();
     }
 
     public Collection<Student> getLastFiveStudents() {
-        logger.info("Was invoked method for get last five students");
+        LOGGER.info("Was invoked method for get last five students");
         return studentRepository.findLastFiveStudents();
     }
 }
