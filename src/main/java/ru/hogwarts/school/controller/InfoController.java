@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.hogwarts.school.service.InfoService;
 
+import java.util.Collection;
+
 @RestController
 public class InfoController {
 
@@ -17,5 +19,10 @@ public class InfoController {
     @GetMapping ("/port")
     public ResponseEntity<String> getPort() {
         return ResponseEntity.ok(infoService.getPort());
+    }
+
+    @GetMapping("/number")
+    public ResponseEntity<Long> getNumber() {
+        return ResponseEntity.ok(infoService.getNumber());
     }
 }

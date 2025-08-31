@@ -79,5 +79,15 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getLastFiveStudents());
     }
 
+    @GetMapping("/getNameStudentsA")
+    public ResponseEntity<Collection<String>> getNameStudentsA() {
+        return ResponseEntity.ok(studentService.getNameStudentsA());
+    }
+
+    @GetMapping("/getMiddleAgeStudents")
+    public ResponseEntity<Double> getMiddleAgeStudents() {
+        return ResponseEntity.ok(studentService.getMiddleAgeStudents());
+    }
+
 }
 

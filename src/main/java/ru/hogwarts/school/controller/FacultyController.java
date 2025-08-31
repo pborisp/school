@@ -60,4 +60,9 @@ public class FacultyController {
         }
         return ResponseEntity.ok(students);
     }
+
+    @GetMapping("/getMaxNameOfFaculty")
+    public ResponseEntity<String> getMaxNameOfFaculty() {
+        return ResponseEntity.ok(facultyService.getMaxNameOfFaculty());
+    }
 }
