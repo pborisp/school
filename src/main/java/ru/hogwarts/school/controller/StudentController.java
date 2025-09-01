@@ -14,6 +14,7 @@ public class StudentController {
     private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
+
         this.studentService = studentService;
     }
 
@@ -89,5 +90,13 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getMiddleAgeStudents());
     }
 
+    @GetMapping("/students/print-parallel")
+    public void getNameStudentsParallel() {
+        studentService.getNameStudentsParallel();
+    }
+    @GetMapping("/students/print-synchronized")
+    public void getNameStudentsSynchronized() {
+        studentService.getNameStudentsSynchronized();
+    }
 }
 

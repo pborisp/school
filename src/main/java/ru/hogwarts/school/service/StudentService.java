@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import liquibase.sdk.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -91,5 +92,51 @@ public class StudentService {
                 .average()
                 .orElse(0.0);
         return middleAgeOfStudents;
+    }
+
+    public void getNameStudentsParallel() {
+        LOGGER.debug("Was invoked method for get name of students - parallels");
+        List<Student> allStudents = studentRepository.findAll();
+
+        System.out.println("1й студент: " + allStudents.get(0).getName());
+        System.out.println("2й студент: " + allStudents.get(1).getName());
+
+        new Thread(() -> {
+            System.out.println("3й студент: " + allStudents.get(2).getName());
+            System.out.println("4й студент: " + allStudents.get(3).getName());
+        }).start();
+
+        new Thread(() -> {
+            System.out.println("5й студент: " + allStudents.get(4).getName());
+            System.out.println("6й студент: " + allStudents.get(5).getName());
+        }).start();
+    }
+
+    public synchronized void getNameStudentsSynchronized() {
+        LOGGER.debug("Was invoked method for get name of students - synchronized");
+        List<Student> allStudents = studentRepository.findAll();
+
+        System.out.println("1й студент: " + allStudents.get(0).getName());
+        System.out.println("2й студент: " + allStudents.get(1).getName());
+
+        new Thread(() -> {
+            System.out.println("3й студент: " + allStudents.get(2).getName());
+            System.out.println("4й студент: " + allStudents.get(3).getName());
+            try {
+                Thread.sleep(000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+
+        new Thread(() -> {
+            System.out.println("5й студент: " + allStudents.get(4).getName());
+            System.out.println("6й студент: " + allStudents.get(5).getName());
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 }

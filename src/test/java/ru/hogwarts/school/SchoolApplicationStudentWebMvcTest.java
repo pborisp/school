@@ -1,9 +1,11 @@
 package ru.hogwarts.school;
 
+import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.hogwarts.school.controller.AvatarController;
 import ru.hogwarts.school.controller.FacultyController;
+import ru.hogwarts.school.controller.InfoController;
 import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.dto.FacultyDTO;
 import ru.hogwarts.school.model.Student;
@@ -21,10 +24,12 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.AvatarServiceImpl;
 import ru.hogwarts.school.service.FacultyService;
+import ru.hogwarts.school.service.InfoService;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -64,6 +69,12 @@ public class SchoolApplicationStudentWebMvcTest {
 
     @InjectMocks
     private FacultyController facultyController;
+
+    @InjectMocks
+    private InfoController infoController;
+
+    @SpyBean
+    private InfoService infoService;
 
     @Test
     public void createStudentTest() throws Exception {
@@ -228,5 +239,148 @@ public class SchoolApplicationStudentWebMvcTest {
                 .andExpect(jsonPath("$.name", Matchers.equalToObject(newName)));
     }
 
+    @Test
+    public void getNameStudentsParallelTest() throws Exception {
+        List<Student> students = new ArrayList<>();
+        JSONObject jsonStudent = new JSONObject();
+        jsonStudent.put("students", students);
+
+        Student student = new Student();
+        Long id = 1L;
+        String name = "Ivan";
+        int age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+
+        id = 2L;
+        name = "Ivan2";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        id = 3L;
+        name = "Ivan3";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        id = 4L;
+        name = "Ivan4";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        id = 5L;
+        name = "Ivan5";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        id = 6L;
+        name = "Ivan6";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        when(studentRepository.findAll()).thenReturn(students);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/students/print-parallel")
+                        .content(jsonStudent.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getNameStudentsSynchronizedTest() throws Exception {
+        List<Student> students = new ArrayList<>();
+        JSONObject jsonStudent = new JSONObject();
+        jsonStudent.put("students", students);
+
+        Student student = new Student();
+        Long id = 1L;
+        String name = "Ivan";
+        int age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+
+        id = 2L;
+        name = "Ivan2";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        id = 3L;
+        name = "Ivan3";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        id = 4L;
+        name = "Ivan4";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        id = 5L;
+        name = "Ivan5";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        id = 6L;
+        name = "Ivan6";
+        age = 30;
+        student.setId(id);
+        student.setName(name);
+        student.setAge(age);
+        student.setFaculty(null);
+        students.add(student);
+
+        when(studentRepository.findAll()).thenReturn(students);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/students/print-synchronized")
+                        .content(jsonStudent.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }
 
