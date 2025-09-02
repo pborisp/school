@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.model.Avatar;
@@ -102,5 +104,13 @@ public class AvatarServiceImpl implements AvatarService {
     private String getExceptions(String fileName) {
         LOGGER.error("There is not avatar with filePath = " + fileName);
         return fileName.substring(fileName.lastIndexOf(".") + 1);
+    }
+
+    @Override
+    public HttpHeaders getHeaders(Avatar avatar) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
+        headers.setContentLength(avatar.getData().length);
+        return headers;
     }
 }
