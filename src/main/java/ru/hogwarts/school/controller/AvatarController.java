@@ -42,10 +42,6 @@ public class AvatarController {
             return ResponseEntity.notFound().build();
         }
 
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
-//        headers.setContentLength(avatar.getData().length);
-
         return ResponseEntity.status(HttpStatus.OK).
                 headers(avatarService.getHeaders(avatar)).
                 body(avatar.getData());
